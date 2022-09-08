@@ -20,10 +20,11 @@
 
 <script lang="ts">
 import { TipoNotificacao } from "@/interfaces/INotificacao";
-import { notificacaoMixin } from "@/mixins/notificar";
 import { useStore } from "@/store";
 import { ADICIONA_PROJETO, ALTERA_PROJETO } from "@/store/tipo-mutacoes";
 import { defineComponent } from "vue";
+import useNotificador from "@/hooks/notificador";
+
 export default defineComponent({
   name: "FormularioVueƒ",
   components: {},
@@ -43,7 +44,6 @@ export default defineComponent({
       type: String,
     },
   },
-  mixins: [notificacaoMixin],
   methods: {
     salvar() {
       if (this.id) {
@@ -66,8 +66,10 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const { notificar } = useNotificador();
     return {
       store,
+      notificar,
     };
   },
 });
