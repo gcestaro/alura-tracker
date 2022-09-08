@@ -3,6 +3,8 @@ import IProjeto from "@/interfaces/IProjeto";
 import ITarefa from "@/interfaces/ITarefa";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
+import { OBTER_PROJETOS } from "./tipo-acoes";
+import http from "@/http";
 import {
   ADICIONA_PROJETO,
   ADICIONA_TAREFA,
@@ -11,7 +13,9 @@ import {
   EXCLUI_PROJETO,
   NOTIFICAR,
   REMOVE_TAREFA,
+  DEFINIR_PROJETOS,
 } from "./tipo-mutacoes";
+
 interface Estado {
   projetos: IProjeto[];
   tarefas: ITarefa[];
@@ -32,6 +36,11 @@ export const store = createStore<Estado>({
     projetos: [],
     tarefas: [],
     notificacoes: [],
+  },
+  actions: {
+    [OBTER_PROJETOS]({ commit }) {
+      http.get("projetos").then((res) => commit(DEFINIR_PROJETOS, res.data));
+    },
   },
   mutations: {
     /*
@@ -54,6 +63,9 @@ export const store = createStore<Estado>({
     },
     [EXCLUI_PROJETO](state, idProjeto: string) {
       state.projetos = state.projetos.filter((pj) => pj.id !== idProjeto);
+    },
+    [DEFINIR_PROJETOS](state, projetos: IProjeto[]) {
+      state.projetos = projetos;
     },
     [ADICIONA_TAREFA](state, tarefa: ITarefa) {
       tarefa.id = new Date().toISOString();
