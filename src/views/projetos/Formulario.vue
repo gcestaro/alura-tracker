@@ -19,7 +19,13 @@
 </template>
 
 <script lang="ts">
+import { TipoNotificacao } from "@/interfaces/INotificacao";
 import { useStore } from "@/store";
+import {
+  ADICIONA_PROJETO,
+  ALTERA_PROJETO,
+  NOTIFICAR,
+} from "@/store/tipo-mutacoes";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "FormularioVueƒ",
@@ -47,11 +53,16 @@ export default defineComponent({
           id: this.id,
           nome: this.nomeProjeto,
         };
-        this.store.commit("ALTERA_PROJETO", projeto);
+        this.store.commit(ALTERA_PROJETO, projeto);
       } else {
-        this.store.commit("ADICIONA_PROJETO", this.nomeProjeto);
+        this.store.commit(ADICIONA_PROJETO, this.nomeProjeto);
       }
       this.nomeProjeto = "";
+      this.store.commit(NOTIFICAR, {
+        titulo: "Projeto salvo",
+        texto: "Seu projeto já está disponível",
+        tipo: TipoNotificacao.SUCESSO,
+      });
       this.$router.push("/projetos");
     },
   },
