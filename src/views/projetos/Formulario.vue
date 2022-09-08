@@ -1,5 +1,5 @@
 <template>
-  <section class="projetos">
+  <section>
     <h1 class="title">Projetos</h1>
     <form @submit.prevent="salvar">
       <div class="field">
@@ -29,15 +29,33 @@ export default defineComponent({
       nomeProjeto: "",
     };
   },
-  computed: {},
+  mounted() {
+    if (this.id) {
+      const projeto = this.store.state.projetos.find((pj) => pj.id === this.id);
+      this.nomeProjeto = projeto?.nome || "";
+    }
+  },
+  props: {
+    id: {
+      type: String,
+    },
+  },
   methods: {
     salvar() {
-      this.store.commit("ADICIONA_PROJETO", this.nomeProjeto);
+      if (this.id) {
+        const projeto = {
+          id: this.id,
+          nome: this.nomeProjeto,
+        };
+        this.store.commit("ALTERA_PROJETO", projeto);
+      } else {
+        this.store.commit("ADICIONA_PROJETO", this.nomeProjeto);
+      }
       this.nomeProjeto = "";
       this.$router.push("/projetos");
     },
   },
-  setup(props) {
+  setup() {
     const store = useStore();
     return {
       store,
@@ -45,9 +63,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.projetos {
-  padding: 1.25rem;
-}
-</style>
