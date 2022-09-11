@@ -1,6 +1,5 @@
 <template>
   <section>
-    <h1 class="title">Projetos</h1>
     <form @submit.prevent="salvar">
       <div class="field">
         <label for="nomeProjeto" class="label"> Nome do Projeto </label>
@@ -21,55 +20,60 @@
 <script lang="ts">
 import { TipoNotificacao } from "@/interfaces/INotificacao";
 import { useStore } from "@/store";
-import { ADICIONA_PROJETO, ALTERA_PROJETO } from "@/store/tipo-mutacoes";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import useNotificador from "@/hooks/notificador";
+import { ADICIONAR_PROJETO, EDITAR_PROJETO } from "@/store/tipo-acoes";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "FormularioVueƒ",
   components: {},
-  data() {
-    return {
-      nomeProjeto: "",
-    };
-  },
-  mounted() {
-    if (this.id) {
-      const projeto = this.store.state.projetos.find((pj) => pj.id === this.id);
-      this.nomeProjeto = projeto?.nome || "";
-    }
-  },
   props: {
     id: {
       type: String,
     },
   },
-  methods: {
-    salvar() {
-      if (this.id) {
-        const projeto = {
-          id: this.id,
-          nome: this.nomeProjeto,
-        };
-        this.store.commit(ALTERA_PROJETO, projeto);
-      } else {
-        this.store.commit(ADICIONA_PROJETO, this.nomeProjeto);
-      }
-      this.nomeProjeto = "";
-      this.notificar(
+  setup(props) {
+    const router = useRouter();
+    const store = useStore();
+    const { notificar } = useNotificador();
+
+    const nomeProjeto = ref("");
+
+    if (props.id) {
+      const projeto = store.state.projeto.projetos.find(
+        (pj) => pj.id == props.id
+      );
+      nomeProjeto.value = projeto?.nome || "";
+    }
+
+    const lidarComSucesso = () => {
+      nomeProjeto.value = "";
+      notificar(
         "Projeto salvo",
         "Seu projeto já está disponível",
         TipoNotificacao.SUCESSO
       );
-      this.$router.push("/projetos");
-    },
-  },
-  setup() {
-    const store = useStore();
-    const { notificar } = useNotificador();
+      router.push("/projetos");
+    };
+
+    const salvar = () => {
+      if (props.id) {
+        const projeto = {
+          id: props.id,
+          nome: nomeProjeto.value,
+        };
+        store.dispatch(EDITAR_PROJETO, projeto).then(lidarComSucesso);
+      } else {
+        store
+          .dispatch(ADICIONAR_PROJETO, nomeProjeto.value)
+          .then(lidarComSucesso);
+      }
+    };
+
     return {
-      store,
-      notificar,
+      nomeProjeto,
+      salvar,
     };
   },
 });

@@ -38,14 +38,13 @@
 
 <script lang="ts">
 import { useStore } from "@/store";
-import { OBTER_PROJETOS } from "@/store/tipo-acoes";
-import { EXCLUI_PROJETO } from "@/store/tipo-mutacoes";
+import { OBTER_PROJETOS, REMOVER_PROJETO } from "@/store/tipo-acoes";
 import { computed, defineComponent } from "vue";
 export default defineComponent({
   name: "ListaVue",
   methods: {
     excluir(idProjeto: string) {
-      this.store.commit(EXCLUI_PROJETO, idProjeto);
+      this.store.dispatch(REMOVER_PROJETO, idProjeto);
     },
   },
   setup() {
@@ -53,7 +52,7 @@ export default defineComponent({
     store.dispatch(OBTER_PROJETOS);
     return {
       store,
-      projetos: computed(() => store.state.projetos),
+      projetos: computed(() => store.state.projeto.projetos),
     };
   },
 });

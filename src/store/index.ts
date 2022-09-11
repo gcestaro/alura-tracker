@@ -1,25 +1,14 @@
 import INotificacao, { TipoNotificacao } from "@/interfaces/INotificacao";
-import IProjeto from "@/interfaces/IProjeto";
-import ITarefa from "@/interfaces/ITarefa";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
-import { OBTER_PROJETOS } from "./tipo-acoes";
-import http from "@/http";
-import {
-  ADICIONA_PROJETO,
-  ADICIONA_TAREFA,
-  ALTERA_PROJETO,
-  ATUALIZA_TAREFA,
-  EXCLUI_PROJETO,
-  NOTIFICAR,
-  REMOVE_TAREFA,
-  DEFINIR_PROJETOS,
-} from "./tipo-mutacoes";
+import { NOTIFICAR } from "./tipo-mutacoes";
+import { EstadoProjeto, projeto } from "./modulos/projeto";
+import { EstadoTarefa, tarefa } from "./modulos/tarefa";
 
-interface Estado {
-  projetos: IProjeto[];
-  tarefas: ITarefa[];
+export interface Estado {
+  tarefa: EstadoTarefa;
   notificacoes: INotificacao[];
+  projeto: EstadoProjeto;
 }
 
 /*
@@ -33,15 +22,15 @@ export const key: InjectionKey<Store<Estado>> = Symbol();
 
 export const store = createStore<Estado>({
   state: {
-    projetos: [],
-    tarefas: [],
     notificacoes: [],
-  },
-  actions: {
-    [OBTER_PROJETOS]({ commit }) {
-      http.get("projetos").then((res) => commit(DEFINIR_PROJETOS, res.data));
+    tarefa: {
+      tarefas: [],
+    },
+    projeto: {
+      projetos: [],
     },
   },
+  actions: {},
   mutations: {
     /*
         Actions X Mutations:
@@ -50,34 +39,6 @@ export const store = createStore<Estado>({
         Então, uma chamada à uma API HTTP, por exemplo, ficaria numa action e uma mutation seria chamada
         caso a requisição seja realizada com sucesso.
     */
-    [ADICIONA_PROJETO](state, nomeProjeto: string) {
-      const projeto = {
-        id: new Date().toISOString(),
-        nome: nomeProjeto,
-      } as IProjeto;
-      state.projetos.push(projeto);
-    },
-    [ALTERA_PROJETO](state, projeto: IProjeto) {
-      const index = state.projetos.findIndex((pj) => pj.id === projeto.id);
-      state.projetos[index] = projeto;
-    },
-    [EXCLUI_PROJETO](state, idProjeto: string) {
-      state.projetos = state.projetos.filter((pj) => pj.id !== idProjeto);
-    },
-    [DEFINIR_PROJETOS](state, projetos: IProjeto[]) {
-      state.projetos = projetos;
-    },
-    [ADICIONA_TAREFA](state, tarefa: ITarefa) {
-      tarefa.id = new Date().toISOString();
-      state.tarefas.push(tarefa);
-    },
-    [ATUALIZA_TAREFA](state, tarefa: ITarefa) {
-      const indice = state.tarefas.findIndex((p) => p.id == tarefa.id);
-      state.tarefas[indice] = tarefa;
-    },
-    [REMOVE_TAREFA](state, id: string) {
-      state.projetos = state.projetos.filter((p) => p.id != id);
-    },
     [NOTIFICAR](state, notificacao: INotificacao) {
       notificacao.id = new Date().getTime();
       state.notificacoes.push(notificacao);
@@ -88,6 +49,10 @@ export const store = createStore<Estado>({
         );
       }, 3000);
     },
+  },
+  modules: {
+    projeto,
+    tarefa,
   },
 });
 

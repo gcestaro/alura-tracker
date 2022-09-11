@@ -2,7 +2,108 @@
   "projetos": [
     {
       "id": 1,
-      "nome" : "Alura tracker"
+      "nome": "Alura Tracker"
+    }
+  ],
+  "tarefas": [
+    {
+      "id": 1,
+      "descricao": "Tarefa X",
+      "duracaoEmSegundos": 120,
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      }
+    },
+    {
+      "duracaoEmSegundos": 2,
+      "descricao": "123",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      },
+      "id": 2
+    },
+    {
+      "duracaoEmSegundos": 2,
+      "descricao": "aasdasxxxx",
+      "projeto": {
+        "nome": "dasdsa",
+        "id": 2
+      },
+      "id": 3
+    },
+    {
+      "duracaoEmSegundos": 3,
+      "descricao": "213",
+      "projeto": {
+        "nome": "dasdsa",
+        "id": 2
+      },
+      "id": 4
+    },
+    {
+      "duracaoEmSegundos": 0,
+      "descricao": "12321",
+      "projeto": {
+        "nome": "dasdsa",
+        "id": 2
+      },
+      "id": 5
+    },
+    {
+      "duracaoEmSegundos": 1,
+      "descricao": "221312323213",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      },
+      "id": 6
+    },
+    {
+      "duracaoEmSegundos": 2,
+      "descricao": "novo test",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      },
+      "id": 7
+    },
+    {
+      "duracaoEmSegundos": 1,
+      "descricao": "TESTE 123",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      },
+      "id": 8
+    },
+    {
+      "duracaoEmSegundos": 0,
+      "descricao": "test 123",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      },
+      "id": 9
+    },
+    {
+      "duracaoEmSegundos": 1,
+      "descricao": "xxxxx",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      },
+      "id": 10
+    },
+    {
+      "duracaoEmSegundos": 1,
+      "descricao": "12321312",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      },
+      "id": 11
     }
   ]
 }

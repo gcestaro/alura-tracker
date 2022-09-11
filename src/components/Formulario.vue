@@ -38,7 +38,7 @@
 import { TipoNotificacao } from "@/interfaces/INotificacao";
 import { key } from "@/store";
 import { NOTIFICAR } from "@/store/tipo-mutacoes";
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import TemporizadorVue from "./Temporizador.vue";
 
@@ -46,17 +46,19 @@ export default defineComponent({
   name: "FormularioVue",
   components: { TemporizadorVue },
   emits: ["salvarTarefa"],
-  data() {
-    return {
-      descricaoTarefa: "",
-      idProjeto: "",
-    };
-  },
-  methods: {
-    finalizarTarefa(tempoDecorrido: number): void {
-      const projeto = this.projetos.find((pj) => pj.id == this.idProjeto);
+  methods: {},
+  setup(props, { emit }) {
+    const store = useStore(key);
+
+    const descricaoTarefa = ref("");
+    const idProjeto = ref("");
+    const projetos = computed(() => store.state.projeto.projetos);
+
+    const finalizarTarefa = (tempoDecorrido: number): void => {
+      const projeto = projetos.value.find((pj) => pj.id == idProjeto.value);
+
       if (!projeto) {
-        this.store.commit(NOTIFICAR, {
+        store.commit(NOTIFICAR, {
           titulo: "Ops!",
           texto: "Selecione um projeto antes de finalizar a tarefa!",
           tipo: TipoNotificacao.FALHA,
@@ -64,20 +66,19 @@ export default defineComponent({
         return;
       }
 
-      this.$emit("salvarTarefa", {
+      emit("salvarTarefa", {
         duracaoEmSegundos: tempoDecorrido,
-        descricao: this.descricaoTarefa,
-        projeto: this.projetos.find((pj) => pj.id === this.idProjeto),
+        descricao: descricaoTarefa.value,
+        projeto: projetos.value.find((pj) => pj.id === idProjeto.value),
       });
-      this.descricaoTarefa = "";
-    },
-  },
-  setup() {
-    const store = useStore(key);
+      descricaoTarefa.value = "";
+    };
 
     return {
-      projetos: computed(() => store.state.projetos),
-      store,
+      descricaoTarefa,
+      idProjeto,
+      projetos,
+      finalizarTarefa,
     };
   },
 });
