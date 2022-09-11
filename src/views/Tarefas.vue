@@ -2,6 +2,19 @@
   <FormularioVue @salvarTarefa="salvarTarefa" />
   <div class="lista">
     <BoxVue v-if="semTarefas"> Nenhuma tarefa </BoxVue>
+    <div class="field">
+      <p class="control has-icons-left has-icons-right">
+        <input
+          class="input"
+          type="text"
+          placeholder="Digite para filtrar"
+          v-model="filtro"
+        />
+        <span class="icon is-small is-left">
+          <i class="fas fa-search"></i>
+        </span>
+      </p>
+    </div>
     <TarefaVue
       @tarefaClicada="selecionarTarefa"
       :tarefa="tarefa"
@@ -46,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from "vue";
+import { computed, defineComponent, Ref, ref, watchEffect } from "vue";
 import FormularioVue from "../components/Formulario.vue";
 import TarefaVue from "../components/Tarefa.vue";
 import ITarefa from "../interfaces/ITarefa";
@@ -72,9 +85,9 @@ export default defineComponent({
     store.dispatch(OBTER_PROJETOS);
     store.dispatch(OBTER_TAREFAS);
 
-    const tarefas = computed(() => store.state.tarefa.tarefas);
+    const filtro = ref("");
 
-    var tarefaSelecionada = ref(null) as Ref<ITarefa | null>;
+    const tarefaSelecionada = ref(null) as Ref<ITarefa | null>;
 
     const salvarTarefa = (tarefa: ITarefa) => {
       store.dispatch(ADICIONAR_TAREFA, tarefa);
@@ -92,9 +105,22 @@ export default defineComponent({
       tarefaSelecionada.value = null;
     };
 
+    const tarefas = computed(
+      () => store.state.tarefa.tarefas
+      // .filter(
+      //   (t) => !filtro.value || t.descricao.includes(filtro.value)
+      // )
+    );
+
+    watchEffect(() => {
+      console.log(filtro.value);
+      store.dispatch(OBTER_TAREFAS, filtro.value);
+    });
+
     return {
       tarefaSelecionada,
       tarefas,
+      filtro,
       salvarTarefa,
       alterarTarefa,
       selecionarTarefa,
