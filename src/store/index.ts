@@ -1,4 +1,4 @@
-import INotificacao, { TipoNotificacao } from "@/interfaces/INotificacao";
+import INotificacao from "@/interfaces/INotificacao";
 import { InjectionKey } from "vue";
 import { createStore, Store, useStore as vuexUseStore } from "vuex";
 import { NOTIFICAR } from "./tipo-mutacoes";

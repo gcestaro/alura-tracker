@@ -8,7 +8,6 @@ import {
 } from "../../tipo-acoes";
 import http from "@/http";
 import {
-  ADICIONA_PROJETO,
   ALTERA_PROJETO,
   EXCLUI_PROJETO,
   DEFINIR_PROJETOS,
